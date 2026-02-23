@@ -1,10 +1,10 @@
 package com.train.rest.controller;
 
+import com.train.rest.dto.CreateUserRequestV1;
+import com.train.rest.dto.CreateUserResponseV1;
+import javassist.NotFoundException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.train.rest.service.UserService;
 import com.train.rest.model.User;
@@ -23,12 +23,18 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable Long id) {
+    public ResponseEntity<User> getUserById(@PathVariable Long id) throws NotFoundException {
        return ResponseEntity.ok(userService.getUser(id));
     }
 	
 	@GetMapping("/")
 	public ResponseEntity<List<User>> getUsersList() {
 		return ResponseEntity.ok(userService.getUsersList());
+	}
+	
+	@PostMapping
+	@RequestMapping("/")
+	public ResponseEntity<CreateUserResponseV1> createUser(@RequestBody CreateUserRequestV1 requestV1) {
+		return ResponseEntity.ok(userService.createUserV1(requestV1));
 	}
 }
