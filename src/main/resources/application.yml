@@ -7,3 +7,8 @@ spring:
   liquibase:
       enabled: true
       change-log: db/changelog/changelog-master.xml
+  logging:
+      level:
+        org.springframework.web: DEBUG
+        org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+        org.springframework.web.servlet.DispatcherServlet: DEBUG
