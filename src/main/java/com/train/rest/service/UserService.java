@@ -6,11 +6,14 @@ import java.util.Optional;
 
 import com.train.rest.dto.CreateUserRequestV1;
 import com.train.rest.dto.CreateUserResponseV1;
-import javassist.NotFoundException;
+import com.train.rest.dto.UpdateUserRequestV1;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.train.rest.model.User;
 import com.train.rest.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class UserService  {
@@ -19,7 +22,8 @@ public class UserService  {
     public UserService( UserRepository repository){
         this.repository = repository;
     }
-
+    
+	@Transactional
 	public CreateUserResponseV1 createUserV1(CreateUserRequestV1 requestV1) {
 		//Create
 		User newest = new User();
@@ -31,10 +35,29 @@ public class UserService  {
 		return new CreateUserResponseV1(repository.save(newest).getId() );
 	}
 	
-    public User getUser(Long id) throws NotFoundException {
-        return repository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
+	@Transactional
+    public User getUser(Long id) {
+        return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
     
+	@Transactional
+	public void updateUser(Long id, UpdateUserRequestV1 user){
+		User modify = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		
+		Optional.ofNullable(user.userName()).ifPresent(modify::setUsername);
+		Optional.ofNullable(user.userSurname()).ifPresent(modify::setSurname);
+		Optional.ofNullable(user.email()).ifPresent(modify::setEmail);
+		modify.setModifiedAt(LocalDateTime.now());
+		
+		repository.save(modify);
+	}
+	
+	@Transactional
+	public void deleteUser(Long id) {
+		repository.deleteById(id);
+	}
+	
+	@Transactional
     public List<User> getUsersList() {
         return repository.findAll();
     }
