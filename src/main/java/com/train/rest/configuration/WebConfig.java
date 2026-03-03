@@ -8,8 +8,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-	@Bean
-	public void addLoggingFilter(InterceptorRegistry registry){
+	@Override
+	public void addInterceptors(InterceptorRegistry registry){
 		registry.addInterceptor(new LoggingInterceptor());
 	}
 }
