@@ -17,7 +17,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
 	                         HttpServletResponse response,
 	                         Object handler) {
 		
-		log.info("Request: {} {}", request.getMethod(), request.getRequestURI());
+		log.info("Request: {} {} {} ", request.getMethod(), request.getRequestURI(), response.getStatus());
 		return true;
 	}
 }
