@@ -1,0 +1,4 @@
+2026-03-08 14:37:52.721 DEBUG [http-nio-8080-exec-3] org.hibernate.SQL - select u1_0.id,u1_0.created_at,u1_0.email,u1_0.modified_at,u1_0.user_surname,u1_0.user_name from users u1_0 where u1_0.id=?
+2026-03-08 14:38:02.767 DEBUG [http-nio-8080-exec-4] org.hibernate.SQL - select u1_0.id,u1_0.created_at,u1_0.email,u1_0.modified_at,u1_0.user_surname,u1_0.user_name from users u1_0 where u1_0.id=?
+2026-03-08 14:38:02.820 DEBUG [http-nio-8080-exec-4] org.hibernate.SQL - update users set created_at=?,email=?,modified_at=?,user_surname=?,user_name=? where id=?
+2026-03-08 14:38:34.030 DEBUG [http-nio-8080-exec-5] org.hibernate.SQL - select u1_0.id,u1_0.created_at,u1_0.email,u1_0.modified_at,u1_0.user_surname,u1_0.user_name from users u1_0 where u1_0.id=?
