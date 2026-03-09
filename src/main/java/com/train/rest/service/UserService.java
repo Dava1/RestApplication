@@ -7,6 +7,8 @@ import java.util.Optional;
 import com.train.rest.dto.CreateUserRequestV1;
 import com.train.rest.dto.CreateUserResponseV1;
 import com.train.rest.dto.UpdateUserRequestV1;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,15 +19,19 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class UserService  {
-    private final UserRepository repository;
-
-    public UserService( UserRepository repository){
+	
+	private static final Logger log = LoggerFactory.getLogger(UserService.class);
+	
+	private final UserRepository repository;
+	
+	public UserService( UserRepository repository){
         this.repository = repository;
     }
     
 	@Transactional
 	public CreateUserResponseV1 createUserV1(CreateUserRequestV1 requestV1) {
 		//Create
+		log.info("Creation of user with name: {}", requestV1.userName());
 		User newest = new User();
 		newest.setCreatedAt(LocalDateTime.now());
 		newest.setUsername(requestV1.userName());
@@ -42,6 +48,7 @@ public class UserService  {
     
 	@Transactional
 	public void updateUser(Long id, UpdateUserRequestV1 user){
+		log.info("Updating user with name id: {}", id);
 		User modify = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 		
 		Optional.ofNullable(user.userName()).ifPresent(modify::setUsername);

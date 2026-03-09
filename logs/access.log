@@ -1,0 +1,4 @@
+2026-03-08 14:37:52 Request: GET /api/users/1 200
+2026-03-08 14:38:02 Request: PATCH /api/users/1 200
+2026-03-08 14:38:34 Request: PATCH /api/users/10 200
+2026-03-08 14:38:34 Request: GET /error 404
