@@ -5,6 +5,7 @@ services:
     image: postgres:15
     container_name: postgress_db
     restart: always
+    mem_reservation: 512m
     environment:
       POSTGRES_DB: mydb
       POSTGRES_USER: myuser
@@ -16,6 +17,7 @@ services:
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
+    mem_reservation: 256m
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
     ports:
@@ -23,6 +25,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
+    mem_reservation: 1g
     depends_on:
       - zookeeper
     ports:
@@ -31,6 +34,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_HEAP_OPTS: -Xms512m -Xmx1g
 
 volumes:
   postgres_data:

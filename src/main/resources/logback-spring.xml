@@ -1,6 +1,7 @@
 <configuration>
 
     <property name="LOG_PATH" value="logs"/>
+    <property name="ELK_LOG_PATH" value="${LOG_PATH}/elk"/>
     <property name="LOG_PATTERN"
               value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"/>
 
@@ -30,6 +31,46 @@
 
         <encoder>
             <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+
+    </appender>
+
+    <!-- JSON file for ELK/Filebeat -->
+    <appender name="APP_JSON_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>${ELK_LOG_PATH}/app-json.log</file>
+
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+
+            <fileNamePattern>
+                ${ELK_LOG_PATH}/app-json.%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+
+            <maxHistory>30</maxHistory>
+
+        </rollingPolicy>
+
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <fieldName>@timestamp</fieldName>
+                </timestamp>
+                <pattern>
+                    <pattern>
+                        {
+                        "service":"rest",
+                        "environment":"local",
+                        "level":"%level",
+                        "logger":"%logger",
+                        "thread":"%thread",
+                        "message":"%message",
+                        "exception":"%replace(%xThrowable){'\n','\\n'}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
         </encoder>
 
     </appender>
@@ -95,7 +136,6 @@
         <appender-ref ref="ACCESS_FILE"/>
     </logger>
 
-
     <!-- Example package logging -->
     <logger name="com.train" level="DEBUG"/>
 
@@ -103,6 +143,7 @@
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="APP_FILE"/>
+        <appender-ref ref="APP_JSON_FILE"/>
         <appender-ref ref="ERROR_FILE"/>
     </root>
 
