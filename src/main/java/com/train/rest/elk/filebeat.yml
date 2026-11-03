@@ -1,0 +1,65 @@
+filebeat.inputs:
+  - type: filestream
+    id: rest-app-json
+    enabled: true
+    paths:
+      - /usr/share/filebeat/logs/elk/app-json.log
+      - /usr/share/filebeat/logs/elk/app-json.*.log
+    fields_under_root: true
+    fields:
+      event.dataset: rest.application
+      service.type: spring-boot
+      data_stream.type: logs
+      data_stream.dataset: rest.application
+      data_stream.namespace: local
+    parsers:
+      - ndjson:
+          overwrite_keys: true
+          add_error_key: true
+    ignore_older: 72h
+    clean_inactive: 96h
+
+processors:
+  - rename:
+      fields:
+        - from: "service"
+          to: "service.name"
+        - from: "environment"
+          to: "service.environment"
+        - from: "level"
+          to: "log.level"
+        - from: "logger"
+          to: "log.logger"
+        - from: "thread"
+          to: "process.thread.name"
+        - from: "exception"
+          to: "error.stack_trace"
+      ignore_missing: true
+      fail_on_error: false
+  - add_host_metadata: ~
+  - add_fields:
+      target: ""
+      fields:
+        ecs.version: 8.11.0
+        event.kind: event
+        event.category: web
+  - drop_fields:
+      fields:
+        - "agent.ephemeral_id"
+      ignore_missing: true
+
+setup.kibana:
+  host: kibana:5601
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+  index: "rest-logs-%{+yyyy.MM.dd}"
+
+setup.template.name: "rest-logs"
+setup.template.pattern: "rest-logs-*"
+setup.template.settings:
+  index.number_of_shards: 1
+  index.number_of_replicas: 0
+setup.ilm.enabled: false
+
+logging.level: info
